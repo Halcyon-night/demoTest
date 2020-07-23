@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wyy.mapper.DepartmentMapper">
+ 	<!-- 部门的集合信息 -->
+ 	<resultMap type="cn.wyy.pojo.Department" id="DepartmentList">
+ 		<id property="department_id" column="department_id"/>
+		<result property="department_name" column="department_name"/>
+		<result property="department_user" column="department_user"/>
+		<result property="department_time" column="department_time"/>
+		<!-- 一对多的形式展示用户信息 -->
+		<collection property="UserList" ofType="cn.wyy.pojo.User">
+			<id property="user_id" column="user_id"/>
+			<result property="user_name" column="user_name"/>
+			<result property="user_departement" column="user_departement"/>
+			<result property="user_salary" column="user_salary"/>
+			<result property="user_address" column="user_address"/>
+			<result property="department_name" column="department_name"/>
+		</collection>
+ 	</resultMap>
+ 	
+ 	<!-- 查询全部部门信息和员工信息 -->
+ 	<select id="getdepartmentList" resultMap="DepartmentList">
+ 		SELECT d.`department_id`,d.`department_name`,d.`department_user`,d.`department_time`,
+			   u.`user_id`,u.`user_name`,u.`user_departement`,u.`user_salary`,u.`user_address`
+		FROM `department` AS d
+		LEFT JOIN `user` AS u
+		ON d.`department_id` = u.user_departement
+ 	</select>
+ 	
+ 	<!-- 数据回显 -->
+ 	<select id="echoUser" resultType="cn.wyy.pojo.User">
+ 		SELECT u.`user_id`,u.`user_name`,u.`user_departement`,u.`user_salary`,u.`user_address`,
+			   d.`department_id`,d.`department_name`,d.`department_user`,d.`department_time`
+		FROM `user` AS u
+		LEFT JOIN `department` AS d
+		ON d.`department_id` =u.user_departement
+		WHERE `user_id` = #{user_id};
+ 	</select>
+ 	
+ 	<!-- 添加一条员工信息 -->
+ 	<insert id="addUser" parameterType="cn.wyy.pojo.User">
+ 		INSERT INTO `user`(`user_name`,`user_departement`,`user_salary`,`user_address`)
+		VALUES(#{user_name},#{user_departement},#{user_salary},#{user_address});
+ 	</insert>
+ 	
+ 	<!-- 修改一条员工信息 -->
+ 	<update id="updateUser" parameterType="cn.wyy.pojo.User">
+ 		UPDATE `user`
+		<set>
+			<if test="user_name != null">`user_name`= #{user_name},</if>
+			<if test="user_departement != null">`user_departement`=#{user_departement},</if>
+			<if test="user_salary != null">`user_salary`=#{user_salary},</if>
+			<if test="user_address != null">`user_address`=#{user_address}</if>
+		</set>
+		WHERE `user_id`=#{user_id};
+ 	</update>
+ 	
+ 	<!-- 删除一条员工信息 -->
+ 	<delete id="deleteUser" parameterType="Integer">
+ 		DELETE FROM `user` WHERE `user_id` = #{user_id};
+ 	</delete>
+ 	
+ 	<!-- 模糊查询部门员工的全部信息 -->
+	<select id="getdepartmentLisyByNameAndId" resultMap="DepartmentList">
+		SELECT d.`department_id`,d.`department_name`,d.`department_user`,d.`department_time`,
+			   u.`user_id`,u.`user_name`,u.`user_departement`,u.`user_salary`,u.`user_address`
+		FROM `department` AS d
+		LEFT JOIN `user` AS u
+		ON d.`department_id` =u.user_departement
+		<where>
+			<if test="user_name != null and user_name != ''">
+				u.`user_name` LIKE CONCAT('%',#{user_name},'%')
+			</if>
+			<if test="user_departement != 0">
+				AND u.`user_departement` = #{user_departement}
+			</if>
+		</where>
+	</select>
+ 	
+ 	
+</mapper>

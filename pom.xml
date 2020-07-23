@@ -1,0 +1,17 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>cn.wyy.bdqn</groupId>
+  <artifactId>demo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <build/>
+  <modules>
+  	<!-- 优先创建实体类信息 -->
+  	<module>demo-wyy-pojo</module>
+  	<module>demo-wyy-utlis</module>
+  	<module>demo-wyy-mapper</module>
+  	<module>demo-wyy-service</module>
+  	<module>demo-wyy-controller</module>
+  	<module>demo-wyy-test</module>
+  </modules>
+</project>
